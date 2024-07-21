@@ -1,5 +1,12 @@
 # Weather-Detection-Project🌥️
-Weather  Detection Project using  Classification, Regression and  Time Series  Forecasting.
+### Project Tools 🛠️:
+- Data Analysis Techniques
+- Explotary Data Analysis
+- Data Preprocessing
+- Machine Learning Algorithms
+- Time Series Analysis & Forecasting
+- Web Deployment using Streamlit
+- Build an Interactive Dashboard
 
 ## This project aims to predict the weather using various data science and machine learning techniques. We employed classification, regression, and time series forecasting methods to predict weather temperatures accurately.
 
