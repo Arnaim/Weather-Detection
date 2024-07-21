@@ -52,14 +52,25 @@ In this project, we utilize Streamlit as our deployment tool to transform our AI
 
 to access the application [Link](link)
 
+
+# Dashboard 📊
+
+in the end of our data science project we utilise power BI to visualize the datasets we use in the project to get some insights from the dataset that can help the client to be familiar with his own data.
+
+![Dashboard](dashboard.png)
+
+
 # Usage🤔
 
-To use the trained emotion detection model:
+To use this weather detection project:
 
-1. Load the trained models from the provided pickle file.
-2. Preprocess the input data
-3. Use the trained model to predict the weather of the preprocessed data.
-edicted Emotion:", predicted_emotion)
+1. Load the classification dataset from [HERE](https://github.com/sahermuhamed1/Weather-Detection/blob/main/weather_classification_data.csv)
+2. Load the Regression and Forecasting dataset from [HERE](https://github.com/sahermuhamed1/Weather-Detection/blob/main/GlobalTemperatures.csv)
+3. Project Presentation [HERE](https://github.com/sahermuhamed1/Weather-Detection/blob/main/Weather%20detection%20presentation.pptx)
+4. Access the classification notebook from [HERE](https://github.com/sahermuhamed1/Weather-Detection/blob/main/weather_classification%5B1%5D.ipynb)
+5. Access the regression and forecasting notebook from [HERE](https://github.com/sahermuhamed1/Weather-Detection/blob/main/Weather%20forcasting.ipynb)
+6. Web application file [HERE](https://github.com/sahermuhamed1/Weather-Detection/blob/main/App.py)
+7. Power BI dashbaord from [HERE](https://github.com/sahermuhamed1/Weather-Detection/blob/main/Weather%20Dashboard.pbix)
 
 
 
