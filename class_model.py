@@ -1,47 +1,43 @@
 import warnings
 import pandas as pd
-from sklearn.feature_selection import SelectKBest
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.ensemble import RandomForestClassifier
 import pickle
-import streamlit as st
 from class_preproccising import data_pre
 warnings.filterwarnings('ignore')
 
+# Load and preprocess the data
+df = pd.read_csv(r"weather_classification_data.csv")
+df = data_pre(df)
+
+# Separate features and target
 target_column = "Weather Type"
-def train_model(df, target_column, n_estimators=100, max_depth=50, random_state=77):
-    le = LabelEncoder()
-    for col in df.columns:
-        if df[col].dtype == 'object':
-            df[col] = le.fit_transform(df[col])
-    
-    y_train = df[target_column]
-    X_train = df.drop(columns=[target_column])
-    
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
+X = df.drop(columns=[target_column])
+y = df[target_column]
 
-    model = RandomForestClassifier(
-        n_estimators=n_estimators,
-        max_depth=max_depth,
-        random_state=random_state
-    )
+# Define column types
+numerical_features = X.select_dtypes(include=['int64', 'float64']).columns.tolist()
+categorical_features = X.select_dtypes(include=['object']).columns.tolist()
 
-    model.fit(X_train, y_train)
-    return model, scaler
+# Preprocessing steps
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numerical_features),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features)
+    ]
+)
 
+# Create pipeline
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', RandomForestClassifier(n_estimators=100, max_depth=50, random_state=77))
+])
 
+# Fit model
+pipeline.fit(X, y)
 
-if __name__ == "__main__":
-    df = pd.read_csv(r"E:\Full Data Science Projects\Weather type classification\weather_classification_data.csv") 
-    df =  data_pre(df)
-    
-    model, scaler = train_model(df, target_column='Weather Type')
-    
-    with open("model.pkl", "wb") as file:
-        pickle.dump(model, file)
-    with open("scaler.pkl", "wb") as file:
-        pickle.dump(scaler, file)
-
+# Save model
+with open("model.pkl", "wb") as file:
+    pickle.dump(pipeline, file)

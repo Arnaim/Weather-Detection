@@ -1,58 +1,67 @@
 import pandas as pd
-import seaborn as sns
 import streamlit as st
-import matplotlib.pyplot as plt
 import numpy as np
-from reg_preprocessing import data_pre
-from sklearn.pipeline import Pipeline
 import pickle
 
-st.title("Weather Detection Project!🌧️")
+st.title("Weather Detection Project! 🌧️")
 
-model = pickle.load(open("model_r.pkl", "rb"))
-
-#make a sidebar tto select if the user needs  classification or regression or forcasting
+# Sidebar to choose task
 st.sidebar.title("Choose the Model Type:")
 task = st.sidebar.selectbox("Choose a task", ["Regression", "Classification"])
 
-
+# REGRESSION MODEL
 if task == "Regression":
-    st.write("Regression")
+    st.subheader("🌡️ Regression Task")
+    model = pickle.load(open("model_r.pkl", "rb"))  # Load regression model
+
     st.write("Please enter the following details to predict the temperature:")
     land_avg_temperature = st.number_input("Enter the land_avg_temperature")
     land_max_temperature = st.number_input("Enter the land_max_temperature")
     land_min_temperature = st.number_input("Enter the land_min_temperature")
-    
-    input_data = np.array([[land_avg_temperature, land_max_temperature, land_min_temperature]])
-    prediction = model.predict(input_data)
-    
-    if st.button("Predict"):
-        st.write(f"The predicted temperature is: {prediction[0]}")
 
+    input_data = np.array([[land_avg_temperature, land_max_temperature, land_min_temperature]])
+
+    if st.button("Predict (Regression)"):
+        prediction = model.predict(input_data)
+        st.success(f"🌡️ The predicted temperature is: {prediction[0]:.2f}°C")
+
+# CLASSIFICATION MODEL
 elif task == "Classification":
-    st.write("Classification")
+    st.subheader("🌥️ Classification Task")
+    model = pickle.load(open("model.pkl", "rb"))  # Load classification pipeline
+
     st.write("Please enter the following details to predict the weather type:")
+
+    # Numeric inputs
     temperature = st.number_input("Enter the temperature")
     humidity = st.number_input("Enter the humidity")
     wind_speed = st.number_input("Enter the wind speed")
     percipitation = st.number_input("Enter the percipitation")
     pressure = st.number_input("Enter the atmospheric pressure")
-    uv_index = st.number_input("Enter the uv index")
+    uv_index = st.number_input("Enter the UV index")
     visibility = st.number_input("Enter the visibility")
-    
-    #get the cloud cover and season as a dropdown
+
+    # Categorical inputs
     cloud_cover = st.selectbox("Select the cloud cover", ["clear", "cloudy", "partly cloudy", "overcast"])
     season = st.selectbox("Select the season", ["Winter", "Spring", "Summer", "Autumn"])
     location = st.selectbox("Select the location", ["coastal", "mountain", "inland"])
-    
-    input_data = np.array([[temperature, humidity, wind_speed, percipitation, cloud_cover, pressure, uv_index, season, visibility, location]])
-    scaler = pickle.load(open("scaler.pkl", "rb"))
-    input_data = scaler.transform(input_data)
-    
-    prediction = model.predict(input_data)
-    
-    if st.button("Predict"):
-        st.write(f"The predicted weather type is: {prediction[0]}")
-        
 
-    
+    # Create input DataFrame
+    input_dict = {
+    "Temperature": [temperature],
+    "Humidity": [humidity],
+    "Wind Speed": [wind_speed],
+    "Precipitation (%)": [percipitation],
+    "Cloud Cover": [cloud_cover],
+    "Atmospheric Pressure": [pressure],
+    "UV Index": [uv_index],
+    "Season": [season],
+    "Visibility (km)": [visibility],
+    "Location": [location]
+}
+
+    input_df = pd.DataFrame(input_dict)
+
+    if st.button("Predict (Classification)"):
+        prediction = model.predict(input_df)
+        st.success(f"☁️ The predicted weather type is: {prediction[0]}")
